@@ -4,8 +4,7 @@ __pyache__/
 
 *.log
 *.pot
-*.__pyache__
+*.pyc
 *.sqlite3
-db.sqlite3
 
 .vscode/

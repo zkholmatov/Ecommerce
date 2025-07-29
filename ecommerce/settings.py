@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'base.apps.BaseConfig',
 ]
 
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = ['https://ecommerce-ug4p.onrender.com']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
