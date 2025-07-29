@@ -1,0 +1,65 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% load static %}
+<div class="home__page">
+    <div class="hero">
+        {% if request.user.is_authenticated %}
+        <h4>Hello, {{request.user.username}}</h4>
+        {% endif %}
+        {% for item in featured_items %}
+        <div class="hero__content {% if forloop.first %}active{% endif %}" data-index="{{forloop.counter0}}">
+            <div>
+                <div class="product__info">
+                    <h1>{{item.brand}} {{item.name}}</h1>
+                    <h5>{{item.description}}</h5>
+                    <a href="{% url 'product-page' item.id %}" class="cta__button">View Product</a>
+                </div>
+            </div>
+            <div>
+                <img src="{{item.image.url}}" class="hero__image" alt="">
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="actions">
+        <div class="hero__nav">
+            {% for item in featured_items %}
+            <button class="hero__button {% if forloop.first %}active{% endif %}" data-index="{{forloop.counter0}}"></button>
+            {% endfor %}
+        </div>
+        <div>
+            <a href="{% url 'shop' %}">
+                <img src="{% static 'images/down-chevron.png' %}" class="image__small shop__btn" alt="">
+            </a>
+        </div>
+        <div class="social__links">
+            <a href=""><img src="{% static 'images/facebook.png' %}" class="image__small" alt=""></a>
+            <a href=""><img src="{% static 'images/twitter.png' %}" class="image__small" alt=""></a>
+            <a href=""><img src="{% static 'images/instagram.png' %}" class="image__small" alt=""></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const buttons = document.querySelectorAll('.hero__button');
+    const items = document.querySelectorAll('.hero__content');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const index = button.dataset.index;
+
+            items.forEach((item, i) => {
+                item.classList.toggle('active', i == index);
+            });
+
+            buttons.forEach((btn, i) => {
+                btn.classList.toggle('active', i == index);
+            });
+        });
+    });
+</script>
+
+{% endblock content %}

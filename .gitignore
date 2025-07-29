@@ -1,0 +1,16 @@
+__pyache__/
+*.py[cod]
+*$py.class
+
+*.log
+*.pot
+*.__pyache__
+*.sqlite3
+db.sqlite3
+
+.env
+venv/
+env/
+ENV/
+
+.vscode/

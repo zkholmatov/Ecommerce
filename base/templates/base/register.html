@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div class="login__page">
+    <h1>Register</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div>
+            <label for="">{{field.label}}</label>
+            {{field}}
+        </div>
+        {% endfor %}
+        
+        <button type="submit" class="cta__button">Register</button>
+    </form>
+
+    <p>Already have an account?</p>
+    <a href="{% url 'login' %}">Log in</a>
+</div>
+
+{% endblock %}

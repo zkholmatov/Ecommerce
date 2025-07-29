@@ -1,0 +1,96 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% load static %}
+
+
+<div class="shop">
+    <h1>Explore All Products</h1>
+    <section>
+        <div class="shop__filters">
+            <div class="clear__filters">
+                <h2>Filters</h2>
+                <a href="{% url 'shop' %}"><img src="{% static 'images/clear.png' %}" class="image__medium" alt=""></a>
+            </div>
+
+            <div class="filter__category">
+                <h4>Sort by</h4>
+                <span class="divider"></span>
+                <a class="{% if request.GET.sort == '-rating' %}active{% endif %}" href="?sort=-rating">Highest Rated</a>
+                <a class="{% if request.GET.sort == 'price' %}active{% endif %}" href="?sort=price">Price Low to High</a>
+                <a class="{% if request.GET.sort == '-price' %}active{% endif %}" href="?sort=-price">Price High to Low</a>
+                <a class="{% if request.GET.sort == '-added_date' %}active{% endif %}" href="?sort=-added_date">New Arrivals</a>
+                <a class="{% if request.GET.sort == 'brand' %}active{% endif %}" href="?sort=brand">A-Z</a>
+                <a class="{% if request.GET.sort == '-brand' %}active{% endif %}" href="?sort=-brand">Z-A</a>
+            </div>
+
+            <div class="filter__category">
+                <h4>Devices</h4>
+                <span class="divider"></span>
+                <a class="{% if request.GET.q == 'keyboard' %}active{% endif %}" href="{% url 'shop' %}?q=keyboard">Keyboards</a>
+                <a class="{% if request.GET.q == 'mice' %}active{% endif %}" href="{% url 'shop' %}?q=mice">Mice</a>
+                <a class="{% if request.GET.q == 'headset' %}active{% endif %}" href="{% url 'shop' %}?q=headset">Headsets</a>
+            </div>
+
+            <div class="filter__category">
+                <h4>Brands</h4>
+                <span class="divider"></span>
+                {% for brand in brands %}
+                <a class="{% if request.GET.q == brand %}active{% endif %}" href="{% url 'shop' %}?q={{brand}}">{{brand}}</a>
+                {% endfor %}
+            </div>
+
+            <div class="filter__category">
+                <h4>Price</h4>
+                <span class="divider"></span>
+                <form method="GET" action="" class="price__filter">
+                    {% csrf_token %}
+                    <input name="min_price" type="number" value="{{min_price}}" placeholder="Min">
+                    <input name="max_price" type="number" value="{{max_price}}" placeholder="Max">
+                    <input class="cta__button" type="submit" name="set" id="" value="Set" >
+                </form>
+            </div>
+        </div>
+        <div class="shop__grid">
+            {% for item in items %}
+            <div class="shop__item">
+                {% if item == top_rated %}
+                <span class="top__rated">TOP RATED</span>
+                {% endif %}
+                <a href="{% url 'product-page' item.id %}">
+                    <img src="{{item.image.url}}" class="image__display" alt="">
+                </a>
+                <div class="product__info">
+                    <span class="divider"></span>
+                    <h6>
+                        <span class="bold">{{item.brand}}</span> 
+                        {{item.name|truncatechars:17}}
+                    </h6>
+                    {% if item.reviews > 0 %}
+                    <div class="rating">
+                        <img src="{% static 'images/star.png' %}" class="image__small" alt="">
+                        <p>{{item.rating|floatformat:1}}</p>
+                        <p>({{item.reviews}})</p>
+                    </div>
+                    {% else %}
+                    <p>No reviews yet</p>
+                    {% endif %}
+                    <div class="shop__cta">
+                        <h6 class="text__price">${{item.price}}</h6>
+                        <a href="{% url 'add-to-cart' item.id %}" class="cta__button">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+            
+            {% endfor %}
+            {% if not items %}
+            <h3>No items found</h3>
+            {% endif %}
+        </div>
+    </section>
+</div>
+
+<br>
+<hr>
+
+{% endblock content %}

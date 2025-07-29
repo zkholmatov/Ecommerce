@@ -1,0 +1,72 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="review__form">
+    <h3>Reviewing {{item.brand}} {{item.name}}</h3>
+    <div class="review__item">
+        <img src="{{item.image.url}}" class="" alt="">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div class="star__rating">
+                <input type="hidden" name="rating" id="rating-value">
+                <img src="{% static 'images/star_empty.png' %}" class="star" data-value="1">
+                <img src="{% static 'images/star_empty.png' %}" class="star" data-value="2">
+                <img src="{% static 'images/star_empty.png' %}" class="star" data-value="3">
+                <img src="{% static 'images/star_empty.png' %}" class="star" data-value="4">
+                <img src="{% static 'images/star_empty.png' %}" class="star" data-value="5">
+            </div>
+
+            <div>
+                <label for="">Title</label>
+                {{form.title}}
+            </div>
+
+            <div>
+                <label for="">Body</label>
+                {{form.body}}
+            </div>
+            <div class="form__options">
+                <a href="{% url 'product-page' item.id %}" class="cancel__button">Cancel</a>
+                <button type="submit" class="cta__button">Add review</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating-value');
+
+    stars.forEach((star, index) => {
+        star.addEventListener('mouseover', () => {
+            stars.forEach((s, i) => {
+                s.src = i <= index
+                ? "{% static 'images/star.png' %}"
+                : "{% static 'images/star_empty.png' %}";
+            });
+        });
+
+        star.addEventListener('mouseout', () => {
+            const selected = parseInt(ratingInput.value) || 0;
+            stars.forEach((s, i) => {
+                s.src = i < selected
+                ? "{% static 'images/star.png' %}"
+                : "{% static 'images/star_empty.png' %}";
+            });
+        });
+
+        star.addEventListener('click', () =>{
+            ratingInput.value = star.dataset.value;
+            star.forEach((s, i) => {
+                s.src = i < star.dataset.value
+                ? "{% static 'images/star.png' %}"
+                : "{% static 'images/star_empty.png' %}";
+            });
+        });
+    });
+</script>
+
+{% endblock content %}

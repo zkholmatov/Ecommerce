@@ -1,0 +1,139 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="product__page">
+    <!-- PRODUCT DISPLAY -->
+    <div class="product__display">
+        <div class="image__gallery">
+            <div class="thumbnails">
+                <div>
+                    <img src="{{item.image.url}}" class="thumb image__display" alt="">
+                </div>
+            {% for img in imgs %}
+                <div>
+                    <img src="{{img.image.url}}" class="thumb image__display" alt="">
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+
+        <div class="main__image__display">
+            <img id="main-img" src="{{item.image.url}}" class="product__image" alt="">
+        </div>
+
+        <div class="product__info">
+            <div>
+                <h4>{{item.brand}}</h4>
+                <h1>{{item.name}}</h1>
+                
+                <div class="rating">
+                    {% if reviews %}
+                        <img src="{% static 'images/star.png' %}" class="image__small" alt="">
+                        <p>{{item.rating|floatformat:1}} ({{reviews_total}})</p>
+                    {% else %}
+                        <p>No reviews yet</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="product__cta">
+                <h3>${{item.price}}</h3>
+                <a href="{% url 'add-to-cart' item.id %}" class="cta__button">Add to cart</a>
+            </div>
+
+            <div class="product__features">
+                <h3>Features</h3>
+                <span class="divider"></span>
+                
+                <div class="specs">
+                    {% for spec in specs %}
+                        <div>
+                            <h5>{{spec.title}}</h5>
+                            <p>{{spec.description}}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIMILAR PRODUCTS -->
+    {% if similar_products %}
+    <div>
+        <h2>Similar products</h2>
+        <div class="similar__products">
+            {% for product in similar_products %}
+            <a class="shop__item" href="{% url 'product-page' product.id %}">
+                <img src="{{product.image.url}}" class="image__display" alt="">
+                <div class="product__info">
+                    <span class="divider"></span>
+                    <h6>
+                        <span class="bold">{{product.brand}}</span> 
+                        {{product.name|truncatechars:17}}
+                    </h6>
+                    {% if product.reviews > 0 %}
+                    <div class="rating">
+                        <img src="{% static 'images/star.png' %}" class="image__small" alt="">
+                        <p>{{product.rating|floatformat:1}}</p>
+                        <p>({{product.reviews}})</p>
+                    </div>
+                    {% else %}
+                    <p>No reviews yet</p>
+                    {% endif %}
+                    <h6 class="text__price">${{product.price}}</h6>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- REVIEWS -->
+    <div class="reviews">
+        <div class="reviews__cta">
+            <h2>Reviews</h2>
+            <a href="{% url 'review' item.pk %}" class="cta__button">+</a>
+        </div>
+
+        {% if reviews %}
+        {% for review in reviews %}
+            <div class="review">
+                <div>
+                    <h5>{{review.user.username}} </h5>
+                    <span>{{review.date_posted|timesince}} ago</span>
+                    {% if request.user == review.user %}
+                        <a href="{% url 'update-review' review.id %}"><img src="{% static 'images/edit.png' %}" class="image__small" alt=""></a>
+                        <a href="{% url 'delete-review' review.id %}"><img src="{% static 'images/delete.png' %}" class="image__small" alt=""></a>
+                    {% endif %}
+                </div>
+                <div>
+                    <h5>{{review.title}}</h5>
+                    <img src="{% static 'images/star.png' %}" class="image__small" alt="">
+                    <p>{{review.rating|floatformat:1}}</p>
+                </div>
+                
+                <p>{{review.body}}</p>
+            </div>
+        {% endfor %}
+        {% else %}
+            <div class="review">
+                <h5>No reviews yet</h5>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    const mainImg = document.getElementById('main-img');
+    const thumbnails = document.querySelectorAll('.thumb');
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', () => {
+        mainImg.src = thumbnail.src;
+        });
+    });
+</script>
+
+{% endblock content %}

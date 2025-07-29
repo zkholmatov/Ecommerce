@@ -1,0 +1,67 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% load static %}
+{% load custom_tags %}
+
+
+<div class="cart__page">
+    <h1>Shopping Cart</h1>
+    <div class="shopping__cart">
+    {% for item in cart_items %}
+        <span class="divider"></span>
+        <div class="cart__item">
+            <a href="{% url 'product-page' item.product.id %}">
+                <img src="{{item.product.image.url}}" class="image__display" alt="">
+            </a>
+            <div class="item__info">
+                <section>
+                    <h6><span class="bold">{{item.product.brand}}</span> {{item.product.name}}</h6>
+                    {% if item.product.reviews > 0 %}
+                    <p>
+                        <img src="{% static 'images/star.png' %}" class="image__small" alt="">
+                        {{item.product.rating|floatformat:1}}
+                        ({{item.product.reviews}})
+                    </p>
+                    {% else %}
+                    <p>No reviews yet</p>
+                    {% endif %}
+                    {% if item.id %}
+                    <div class="count__mod">
+                        <a href="{% url 'decrement-item' item.id %}">-</a>
+                        <h6>{{item.quantity}}</h6>
+                        <a href="{% url 'increment-item' item.id %}">+</a>
+                    </div>
+
+                    {% else %}
+                    <div class="count__mod">
+                        <a href="{% url 'decrement-item' item.product.id %}">-</a>
+                        <h6>{{item.quantity}}</h6>
+                        <a href="{% url 'increment-item' item.product.id %}">+</a>
+                    </div>
+                    {% endif %}
+                    <h4>${{item_totals|index:forloop.counter0|floatformat:2}}</h4>
+                </section>
+                <section>
+                    {% if item.id %}
+                    <a href="{% url 'delete-item' item.id %}">
+                        <img src="{% static 'images/delete.png' %}" class="image__medium" alt="">
+                    </a>
+                    {% else %}
+                    <a href="{% url 'delete-item' item.product.id %}">
+                        <img src="{% static 'images/delete.png' %}" class="image__medium" alt="">
+                    </a>
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <div class="cart__total">
+        <span class="divider"></span>
+        <h6>Cart total</h6>
+        <h3>${{cart_total|floatformat:2}}</h3>
+    </div>
+</div>
+
+{% endblock content %}
